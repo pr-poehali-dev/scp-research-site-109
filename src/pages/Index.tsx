@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -32,14 +32,43 @@ interface SCPObject {
   clearance: number;
 }
 
+interface Story {
+  id: string;
+  title: string;
+  author: string;
+  date: string;
+  content: string;
+  clearance: number;
+}
+
+interface MapBuilding {
+  id: string;
+  name: string;
+  type: "main" | "lab" | "containment" | "anomaly" | "research";
+  status: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  description: string;
+}
+
 const Index = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [clearanceLevel, setClearanceLevel] = useState(0);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [selectedSCP, setSelectedSCP] = useState<SCPObject | null>(null);
+  const [selectedStory, setSelectedStory] = useState<Story | null>(null);
   const [glitchText, setGlitchText] = useState(false);
   const [containmentBreach, setContainmentBreach] = useState(false);
+  const [systemMalfunction, setSystemMalfunction] = useState(false);
+  const [powerFlicker, setPowerFlicker] = useState(false);
+  const [radioStatic, setRadioStatic] = useState(false);
+  const [mapPosition, setMapPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const mapRef = useRef<HTMLDivElement>(null);
 
   const scpObjects: SCPObject[] = [
     {
